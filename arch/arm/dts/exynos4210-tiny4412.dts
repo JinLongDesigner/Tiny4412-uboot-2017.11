@@ -1,0 +1,31 @@
+/*
+ * Samsung's Exynos4210 based Origen board device tree source
+ *
+ * Copyright (c) 2014 Samsung Electronics Co., Ltd.
+ *		http://www.samsung.com
+ *
+ * SPDX-License-Identifier:	GPL-2.0+
+ */
+
+/dts-v1/;
+#include "skeleton.dtsi"
+#include "exynos4210.dtsi"
+
+/ {
+	model = "Insignal Tiny4412 evaluation board based on Exynos4210";
+	compatible = "samsang,tiny4412", "samsung,exynos4210";
+
+	chosen {
+		bootargs ="";
+		stdout-path = "serial0";
+	};
+
+	aliases {
+		serial0 = "/serial@13800000";
+		console = "/serial@1380000";
+	};
+
+       serial0:serial@13810000 {
+		status = "okay";
+	};
+};

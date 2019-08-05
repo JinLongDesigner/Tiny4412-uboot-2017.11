@@ -12,10 +12,10 @@
 #include <string.h>
 #include <sys/stat.h>
 
-#define CHECKSUM_OFFSET         (14*1024-4)
+#define CHECKSUM_OFFSET		(14*1024-4)
 #define BUFSIZE			(16*1024)
-//#define IMG_SIZE		(16*1024)
-//#define SPL_HEADER_SIZE		16
+
+
 #define FILE_PERM		(S_IRUSR | S_IWUSR | S_IRGRP \
 				| S_IWGRP | S_IROTH | S_IWOTH)
 //#define SPL_HEADER		"S5PC210 HEADER  "
@@ -27,7 +27,7 @@
 *
 * This function takes two filenames:
 * IN  "u-boot-spl.bin" and
-* OUT "u-boot-mmc-spl.bin as filenames.
+* OUT "$u-boot-mmc-spl.bin as filenames.
 * It reads the "u-boot-spl.bin" in 16K buffer.
 * It calculates checksum of 14K-4 Bytes and stores at 14K-4 offset in buffer.
 * It writes the buffer to "u-boot-mmc-spl.bin" file.

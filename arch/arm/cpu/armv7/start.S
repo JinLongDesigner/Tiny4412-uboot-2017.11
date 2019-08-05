@@ -60,6 +60,10 @@ switch_to_hypervisor_ret:
 	orrne	r0, r0, #0x13		@ set SVC mode
 	orr	r0, r0, #0xc0		@ disable FIQ and IRQ
 	msr	cpsr,r0
+	
+	bl led_config
+	bl led_off_all
+	bl led_on_one
 
 /*
  * Setup vector:
@@ -324,3 +328,69 @@ ENTRY(cpu_init_crit)
 	b	lowlevel_init		@ go setup pll,mux,memory
 ENDPROC(cpu_init_crit)
 #endif
+	.globl led_config
+led_config:
+	ldr     r0, =0x110002E0      @ set GPM4CON Register
+	ldr     r1, [r0]      @ Configurate GPM4_0<A1>GPM4_1<A2>GPM4_2<A2>GPM4_3 output
+	bic 	r1, r1, #0xFF00
+	bic 	r1, r1, #0x00FF
+	orr	r1, r1, #0x1100
+	orr     r1, r1, #0x1100
+	str	r1, [r0]
+	bx	lr
+	
+	.globl led_off_all
+led_off_all:
+	ldr r0, =0x110002E4
+	ldr r1,	[r0]
+	orr r1, r1, #0x0F
+	str r1, [r0]
+
+	bx	lr
+
+	.globl led_on_one
+led_on_one:
+	ldr r0, =0x110002E4
+        ldr r1, [r0]
+        bic r1, r1, #0x01
+        str r1, [r0]
+
+        bx      lr
+
+	.globl led_on_two
+led_on_two:
+        ldr r0, =0x110002E4
+        ldr r1, [r0]
+        bic r1, r1, #0x02
+        str r1, [r0]
+
+        bx      lr
+
+	.globl led_on_three
+led_on_three:
+        ldr r0, =0x110002E4
+        ldr r1, [r0]
+        bic r1, r1, #0x04
+        str r1, [r0]
+
+        bx      lr
+
+	.globl led_on_four
+led_on_four:
+        ldr r0, =0x110002E4
+        ldr r1, [r0]
+        bic r1, r1, #0x08
+        str r1, [r0]
+
+        bx      lr
+
+	.globl bsp_delay
+bsp_delay:
+	ldr r0, =0x8FFFFF
+
+loop:
+	sub r0, r0, #0x01
+	cmp r0, #0x00
+	bne loop
+	
+	bx	lr

@@ -26,7 +26,8 @@
 #include <config.h>
 #include <asm/arch/dmc.h>
 #include "common_setup.h"
-#include "exynos4_setup.h"
+#include <debug_uart.h>
+#include "exynos4412_setup.h"
 
 struct mem_timings mem = {
 	.direct_cmd_msr = {
@@ -123,7 +124,9 @@ static void dmc_init(struct exynos4_dmc *dmc)
 
 	writel(mem.memconfig0, &dmc->memconfig0);
 	writel(mem.memconfig1, &dmc->memconfig1);
-
+#ifdef CONFIG_TINY4412
+	writel(0x8000001F, &dmc->ivcontrol);
+#endif
 	/* Config Precharge Policy */
 	writel(mem.prechconfig, &dmc->prechconfig);
 	/*
@@ -147,6 +150,7 @@ static void dmc_init(struct exynos4_dmc *dmc)
 	writel(DIRECT_CMD_ZQ, &dmc->directcmd);
 	sdelay(0x100000);
 
+#ifdef CONFIG_TINY4412
 	writel((DIRECT_CMD_NOP | DIRECT_CMD_CHIP1_SHIFT), &dmc->directcmd);
 	sdelay(0x100000);
 
@@ -157,7 +161,7 @@ static void dmc_init(struct exynos4_dmc *dmc)
 	/* Chip1: ZQINIT */
 	writel((DIRECT_CMD_ZQ | DIRECT_CMD_CHIP1_SHIFT), &dmc->directcmd);
 	sdelay(0x100000);
-
+#endif
 	phy_control_reset(1, dmc);
 	sdelay(0x100000);
 
@@ -175,6 +179,7 @@ void mem_ctrl_init(int reset)
 	 * 0: full_sync
 	 */
 	writel(1, ASYNC_CONFIG);
+#ifndef CONFIG_TINY4412
 #ifdef CONFIG_ORIGEN
 	/* Interleave: 2Bit, Interleave_bit1: 0x15, Interleave_bit0: 0x7 */
 	writel(APB_SFR_INTERLEAVE_CONF_VAL, EXYNOS4_MIU_BASE +
@@ -202,6 +207,7 @@ void mem_ctrl_init(int reset)
 		ABP_SFR_SLV1_SINGLE_ADDRMAP_END_OFFSET);
 	writel(APB_SFR_SLV_ADDR_MAP_CONF_VAL, EXYNOS4_MIU_BASE +
 		ABP_SFR_SLV_ADDRMAP_CONF_OFFSET);
+#endif
 #endif
 #endif
 	/* DREX0 */

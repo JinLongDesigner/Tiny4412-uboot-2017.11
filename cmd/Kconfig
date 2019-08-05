@@ -665,6 +665,11 @@ config CMD_GPIO
 	help
 	  GPIO support.
 
+config CMD_BEEP
+	bool "beep"
+	help
+	  BEEP suport
+
 config CMD_GPT
 	bool "GPT (GUID Partition Table) command"
 	select PARTITION_UUIDS

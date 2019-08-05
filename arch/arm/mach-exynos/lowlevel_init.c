@@ -218,12 +218,39 @@ int do_lowlevel_init(void)
 #ifdef CONFIG_DEBUG_UART
 #if (defined(CONFIG_SPL_BUILD) && defined(CONFIG_SPL_SERIAL_SUPPORT)) || \
     !defined(CONFIG_SPL_BUILD)
+	#ifdef CONFIG_TINY4412
+		exynos_pinmux_config(PERIPH_ID_UART0, PINMUX_FLAG_NONE);
+	#else
 		exynos_pinmux_config(PERIPH_ID_UART3, PINMUX_FLAG_NONE);
+	#endif
 		debug_uart_init();
+//		printascii("UART DEBUG enable ....!!!\n\r");
 #endif
 #endif
 		mem_ctrl_init(actions & DO_MEM_RESET);
+#if 0
+		writel(0x44444444, 0x40000000);
+		if(readl(0x40000000) == 0x44444444)
+			printascii("addriss is :0x40000000	;the value is  0x44444444.... !!!\n\r");
+		writel(0x55555555, 0x50000000);
+		if(readl(0x50000000) == 0x55555555)
+			printascii("addriss is :0x50000000	;the value is  0x55555555.... !!!\n\r");
+		writel(0x22222222, 0x50000004);
+		if(readl(0x50000004) == 0x22222222)
+			printascii("addriss is :0x50000004	;the value is  0x22222222.... !!!\n\r");
+		writel(0x66666666, 0x60000000);
+		if(readl(0x60000000) == 0x66666666)
+			printascii("addriss is :0x60000000	;the value is  0x66666666.... !!!\n\r");
+		writel(0x77777777, 0x70000000);
+		if(readl(0x70000000) == 0x77777777)
+			printascii("addriss is :0x70000000	;the value is  0x77777777.... !!!\n\r");
+		writel(0x88888888, 0x7FFFFFFC);
+		if(readl(0x7FFFFFFC) == 0x88888888)
+			printascii("addriss is :0x7FFFFFFC	;the value is  0x88888888.... !!!\n\r");
+#endif
+#ifndef CONFIG_TINY4412
 		tzpc_init();
+#endif
 	}
 
 	return actions & DO_WAKEUP;

@@ -16,12 +16,15 @@
 #define CONFIG_TINY4412			1	/* working with TINY4412*/
 
 /* DEBUG UART*/
+#if 0
 #define CONFIG_DEBUG_UART                      1       
 #define CONFIG_SPL_SERIAL_SUPPORT      1
 #define CONFIG_SPL_GPIO_SUPPORT                1
 #define CONFIG_DEBUG_UART_S5P          1
 #define CONFIG_DEBUG_UART_BASE         0x13800000
 #define CONFIG_DEBUG_UART_CLOCK                (100000000)
+#endif
+
 
 #define CONFIG_SYS_DCACHE_OFF		1
 
@@ -42,7 +45,7 @@
 
 /* select serial console configuration */
 #define CONFIG_SERIAL0
-#define CONFIG_BAUDRATE 115200
+#define CONFIG_BAUDRATE            115200
 
 /* Console configuration */
 #define CONFIG_DEFAULT_CONSOLE		"console=ttySAC0,115200n8\0"
@@ -59,8 +62,20 @@
 #define CONFIG_SUPPORT_RAW_INITRD
 
 /* MMC SPL */
+#define CONFIG_BLK	1
 #define COPY_BL2_FNPTR_ADDR	0x02020030
 #define CONFIG_SPL_TEXT_BASE	0x02023400
+#define CONFIG_SPL_STACK   0x02060000
+
+/* USB */
+#define CONFIG_USB_EHCI_EXYNOS	1
+/* USB-KAYBOARD */
+#define CONFIG_SYS_STDIO_DEREGISTER 1
+
+/* ETHERNET */
+#define CONFIG_USB_HOST_ETHER          1
+#define CONFIG_USB_ETHER_DM9621        1
+
 
 #define CONFIG_EXTRA_ENV_SETTINGS \
 	"loadaddr=0x40007000\0" \
@@ -101,15 +116,20 @@
 #define CONFIG_SYS_MMC_ENV_DEV		0
 #define CONFIG_ENV_SIZE			(16 << 10)	/* 16 KB */
 #define RESERVE_BLOCK_SIZE		(512)
-#define BL1_SIZE			(8 << 10) /*16 K reserved for BL1*/
-#define CONFIG_ENV_OFFSET		(RESERVE_BLOCK_SIZE + BL1_SIZE)
+#define BL1_SIZE			(8 << 10) /*8 K reserved for BL1*/
+#define BL2_SIZE                        (16 << 10) /*16 K reserved for BL2*/
+#define CONFIG_ENV_OFFSET		(RESERVE_BLOCK_SIZE + BL1_SIZE + BL2_SIZE)
+
+#define CONFIG_SPL_LDSCRIPT    "board/samsung/common/exynos-uboot-spl.lds"
 
 #define CONFIG_SPL_MAX_FOOTPRINT	(14 * 1024)
 
-#define CONFIG_SYS_INIT_SP_ADDR		0x02040000
+/*#define CONFIG_SYS_INIT_SP_ADDR		0x02040000*/
+
+#define CONFIG_SYS_INIT_SP_ADDR		(CONFIG_SYS_TEXT_BASE - 0x1000000) 
 
 /* U-Boot copy size from boot Media to DRAM.*/
-#define COPY_BL2_SIZE		0x80000
+#define COPY_BL2_SIZE		0x100000
 #define BL2_START_OFFSET	((CONFIG_ENV_OFFSET + CONFIG_ENV_SIZE)/512)
 #define BL2_SIZE_BLOC_COUNT	(COPY_BL2_SIZE/512)
 
